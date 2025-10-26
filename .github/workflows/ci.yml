@@ -38,8 +38,21 @@ jobs:
 
       - name: 🧪 Run tests with coverage
         run: |
+          set -euo pipefail
+
+          echo "Running tests with coverage..."
           go test -v -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.out ./...
+
+          echo "Test coverage summary:"
           go tool cover -func=coverage.out | grep total
+
+          # Optional: fail CI if coverage drops below a threshold
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
+          MIN_COVERAGE=20
+          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
+            echo "❌ Coverage $COVERAGE% is below minimum $MIN_COVERAGE%"
+            exit 1
+          fi
 
       - name: 📤 Upload coverage to Codecov
         uses: codecov/codecov-action@v4
