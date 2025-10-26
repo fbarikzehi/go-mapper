@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== Custom Converter Examples ===\n")
+	fmt.Println("=== Custom Converter Examples ===")
 
 	// Example 1: Time formatting
 	timeFormatting()
@@ -28,7 +28,7 @@ func main() {
 }
 
 func timeFormatting() {
-	fmt.Println("1. Time Formatting:")
+	fmt.Println("\n1. Time Formatting:")
 
 	type Event struct {
 		Name      string
@@ -48,20 +48,17 @@ func timeFormatting() {
 		UpdatedAt: time.Now(),
 	}
 
-	// Custom time formatter
 	timeConverter := func(v reflect.Value) (reflect.Value, error) {
 		if t, ok := v.Interface().(time.Time); ok {
-			formatted := t.Format("2006-01-02 15:04:05")
-			return reflect.ValueOf(formatted), nil
+			return reflect.ValueOf(t.Format("2006-01-02 15:04:05")), nil
 		}
 		return v, nil
 	}
 
 	var dst EventResponse
-	err := mapper.Copy(&dst, src,
+	if err := mapper.Copy(&dst, src,
 		mapper.WithCustomConverter(reflect.TypeOf(time.Time{}), timeConverter),
-	)
-	if err != nil {
+	); err != nil {
 		log.Fatal(err)
 	}
 
@@ -70,7 +67,7 @@ func timeFormatting() {
 }
 
 func priceConversion() {
-	fmt.Println("2. Price Conversion (cents to dollars):")
+	fmt.Println("\n2. Price Conversion (cents to dollars):")
 
 	type Product struct {
 		Name  string
@@ -87,21 +84,17 @@ func priceConversion() {
 		Price: 1299, // $12.99
 	}
 
-	// Convert cents to dollars
 	priceConverter := func(v reflect.Value) (reflect.Value, error) {
 		if v.Kind() == reflect.Int {
-			cents := v.Int()
-			dollars := float64(cents) / 100.0
-			return reflect.ValueOf(dollars), nil
+			return reflect.ValueOf(float64(v.Int()) / 100.0), nil
 		}
 		return v, nil
 	}
 
 	var dst ProductDTO
-	err := mapper.Copy(&dst, src,
+	if err := mapper.Copy(&dst, src,
 		mapper.WithCustomConverter(reflect.TypeOf(0), priceConverter),
-	)
-	if err != nil {
+	); err != nil {
 		log.Fatal(err)
 	}
 
@@ -110,7 +103,7 @@ func priceConversion() {
 }
 
 func stringTransformations() {
-	fmt.Println("3. String Transformations:")
+	fmt.Println("\n3. String Transformations:")
 
 	type User struct {
 		Username string
@@ -130,22 +123,17 @@ func stringTransformations() {
 		Bio:      "   Software Engineer   ",
 	}
 
-	// String normalizer
 	stringConverter := func(v reflect.Value) (reflect.Value, error) {
 		if v.Kind() == reflect.String {
-			s := v.String()
-			// Lowercase and trim
-			normalized := strings.ToLower(strings.TrimSpace(s))
-			return reflect.ValueOf(normalized), nil
+			return reflect.ValueOf(strings.ToLower(strings.TrimSpace(v.String()))), nil
 		}
 		return v, nil
 	}
 
 	var dst UserDTO
-	err := mapper.Copy(&dst, src,
+	if err := mapper.Copy(&dst, src,
 		mapper.WithCustomConverter(reflect.TypeOf(""), stringConverter),
-	)
-	if err != nil {
+	); err != nil {
 		log.Fatal(err)
 	}
 
@@ -154,7 +142,7 @@ func stringTransformations() {
 }
 
 func complexTypeConversion() {
-	fmt.Println("4. Complex Type Conversion:")
+	fmt.Println("\n4. Complex Type Conversion:")
 
 	type Order struct {
 		OrderID    int
@@ -177,30 +165,22 @@ func complexTypeConversion() {
 		Total:      5999,
 	}
 
-	// Int to formatted string
 	intConverter := func(v reflect.Value) (reflect.Value, error) {
 		if v.Kind() == reflect.Int {
 			num := v.Int()
-
-			// Check field context (simplified - in real usage you'd need more context)
-			if num < 3 { // Assume it's status
+			if num >= 0 && num <= 2 {
 				statuses := []string{"pending", "processing", "completed"}
-				if num < int64(len(statuses)) {
-					return reflect.ValueOf(statuses[num]), nil
-				}
+				return reflect.ValueOf(statuses[num]), nil
 			}
-
-			// Default: convert to string
 			return reflect.ValueOf(strconv.FormatInt(num, 10)), nil
 		}
 		return v, nil
 	}
 
 	var dst OrderDTO
-	err := mapper.Copy(&dst, src,
+	if err := mapper.Copy(&dst, src,
 		mapper.WithCustomConverter(reflect.TypeOf(0), intConverter),
-	)
-	if err != nil {
+	); err != nil {
 		log.Fatal(err)
 	}
 

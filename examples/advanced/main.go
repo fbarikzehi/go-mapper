@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== Advanced Mapping Examples ===\n")
+	fmt.Println("=== Advanced Mapping Examples ===")
 
 	// Example 1: Tag-based mapping
 	tagBasedMapping()
@@ -32,7 +32,7 @@ func main() {
 }
 
 func tagBasedMapping() {
-	fmt.Println("1. Tag-Based Mapping:")
+	fmt.Println("\n1. Tag-Based Mapping:")
 
 	type SourceDTO struct {
 		FullName    string `mapper:"name"`
@@ -62,7 +62,7 @@ func tagBasedMapping() {
 }
 
 func customConverters() {
-	fmt.Println("2. Custom Type Converters:")
+	fmt.Println("\n2. Custom Type Converters:")
 
 	type Event struct {
 		Name      string
@@ -82,30 +82,25 @@ func customConverters() {
 		Priority:  1,
 	}
 
-	// Time to string converter
 	timeConverter := func(v reflect.Value) (reflect.Value, error) {
 		if t, ok := v.Interface().(time.Time); ok {
-			formatted := t.Format("2006-01-02 15:04:05")
-			return reflect.ValueOf(formatted), nil
+			return reflect.ValueOf(t.Format("2006-01-02 15:04:05")), nil
 		}
 		return v, nil
 	}
 
-	// Int to string converter
 	intConverter := func(v reflect.Value) (reflect.Value, error) {
 		if v.Kind() == reflect.Int {
-			str := fmt.Sprintf("Level %d", v.Int())
-			return reflect.ValueOf(str), nil
+			return reflect.ValueOf(fmt.Sprintf("Level %d", v.Int())), nil
 		}
 		return v, nil
 	}
 
 	var dst EventDTO
-	err := mapper.Copy(&dst, src,
+	if err := mapper.Copy(&dst, src,
 		mapper.WithCustomConverter(reflect.TypeOf(time.Time{}), timeConverter),
 		mapper.WithCustomConverter(reflect.TypeOf(0), intConverter),
-	)
-	if err != nil {
+	); err != nil {
 		log.Fatal(err)
 	}
 
@@ -114,7 +109,7 @@ func customConverters() {
 }
 
 func caseInsensitiveMapping() {
-	fmt.Println("3. Case-Insensitive Mapping:")
+	fmt.Println("\n3. Case-Insensitive Mapping:")
 
 	type APIResponse struct {
 		USERID    int
@@ -144,7 +139,7 @@ func caseInsensitiveMapping() {
 }
 
 func fieldNameTransformation() {
-	fmt.Println("4. Field Name Transformation:")
+	fmt.Println("\n4. Field Name Transformation:")
 
 	type SnakeCaseModel struct {
 		FirstName    string
@@ -164,15 +159,13 @@ func fieldNameTransformation() {
 		EmailAddress: "charlie@example.com",
 	}
 
-	// Simple field name mapper
 	fieldMapper := func(name string) string {
-		// In real scenario, you might convert snake_case to camelCase
+		// In real scenarios, convert snake_case to camelCase
 		return name
 	}
 
 	var dst CamelCaseModel
-	err := mapper.Copy(&dst, src, mapper.WithFieldNameMapper(fieldMapper))
-	if err != nil {
+	if err := mapper.Copy(&dst, src, mapper.WithFieldNameMapper(fieldMapper)); err != nil {
 		log.Fatal(err)
 	}
 
@@ -181,7 +174,7 @@ func fieldNameTransformation() {
 }
 
 func errorHandling() {
-	fmt.Println("5. Custom Error Handling:")
+	fmt.Println("\n5. Custom Error Handling:")
 
 	type Source struct {
 		Name  string
@@ -204,17 +197,15 @@ func errorHandling() {
 	}
 
 	var dst Destination
-	err := mapper.Copy(&dst, src, mapper.WithErrorHandler(errorHandler))
-	if err != nil {
+	if err := mapper.Copy(&dst, src, mapper.WithErrorHandler(errorHandler)); err != nil {
 		fmt.Printf("Mapping completed with errors: %v\n", err)
 	} else {
 		fmt.Printf("Mapping successful: %+v\n", dst)
 	}
-	fmt.Println()
 }
 
 func reusableMapper() {
-	fmt.Println("6. Reusable Mapper Configuration:")
+	fmt.Println("\n6. Reusable Mapper Configuration:")
 
 	type Record struct {
 		ID   int
@@ -222,7 +213,6 @@ func reusableMapper() {
 		Tags []string
 	}
 
-	// Create mapper once with configuration
 	m := mapper.NewMapper(
 		mapper.WithMaxDepth(10),
 		mapper.WithIgnoreUnexported(true),
@@ -247,5 +237,4 @@ func reusableMapper() {
 	for i, dst := range destinations {
 		fmt.Printf("  [%d] %+v\n", i, dst)
 	}
-	fmt.Println()
 }

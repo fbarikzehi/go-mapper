@@ -31,7 +31,7 @@ type Destination struct {
 }
 
 func main() {
-	fmt.Println("=== Basic Mapping Examples ===\n")
+	fmt.Println("=== Basic Mapping Examples ===")
 
 	// Example 1: Simple mapping
 	simpleMapping()
@@ -47,7 +47,7 @@ func main() {
 }
 
 func simpleMapping() {
-	fmt.Println("1. Simple Mapping:")
+	fmt.Println("\n1. Simple Mapping:")
 
 	src := Source{
 		Name:  "John Doe",
@@ -65,7 +65,7 @@ func simpleMapping() {
 }
 
 func nestedMapping() {
-	fmt.Println("2. Nested Struct Mapping:")
+	fmt.Println("\n2. Nested Struct Mapping:")
 
 	src := Source{
 		Name:  "Jane Smith",
@@ -88,7 +88,7 @@ func nestedMapping() {
 }
 
 func sliceMapping() {
-	fmt.Println("3. Slice Mapping:")
+	fmt.Println("\n3. Slice Mapping:")
 
 	type Item struct {
 		ID   int
@@ -117,11 +117,10 @@ func sliceMapping() {
 	for i, item := range dst.Items {
 		fmt.Printf("  [%d] %+v\n", i, item)
 	}
-	fmt.Println()
 }
 
 func mapMapping() {
-	fmt.Println("4. Map Mapping:")
+	fmt.Println("\n4. Map Mapping:")
 
 	type Config struct {
 		Settings map[string]string

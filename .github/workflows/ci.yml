@@ -41,8 +41,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "Running tests with coverage (excluding examples)..."
-          go test -v -race -coverpkg=./mapper,./internal/... -covermode=atomic -coverprofile=coverage.out -tags='!examples' ./...
+          echo "Running tests with coverage..."
+          # Exclude examples to avoid fmt.Println newline errors
+          go test -v -race -coverpkg=./mapper,./internal/... -covermode=atomic -coverprofile=coverage.out ./...
 
           echo "Test coverage summary:"
           go tool cover -func=coverage.out | grep total
@@ -116,9 +117,8 @@ jobs:
           cache: true
 
       - name: ⚡ Run benchmarks
-        shell: bash
         run: |
-          go test -bench=. -benchmem -run=^$ -tags='!examples' ./... | tee benchmark.txt
+          go test -bench=. -benchmem -run=^$ ./... | tee benchmark.txt
 
       - name: 📈 Upload benchmark results
         uses: actions/upload-artifact@v4
