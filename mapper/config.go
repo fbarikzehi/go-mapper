@@ -3,10 +3,7 @@
 package mapper
 
 import (
-	"fmt"
-	"maps"
 	"reflect"
-	"time"
 )
 
 // Configuration constants define mapper defaults and limits.
@@ -105,57 +102,3 @@ type FieldNameMapperFunc func(fieldName string) string
 // If the function returns nil, the mapper continues execution;
 // otherwise, mapping is stopped and the returned error is propagated.
 type ErrorHandlerFunc func(err error, srcField, dstField string) error
-
-// defaultConfig returns a new Config populated with sensible defaults.
-//
-// It is used internally when no user configuration is provided.
-func defaultConfig() *Config {
-	return &Config{
-		MaxDepth:           DefaultMaxDepth,
-		TagName:            DefaultTagName,
-		IgnoreUnexported:   true,
-		DeepCopy:           true,
-		CaseSensitive:      true,
-		CustomConverters:   make(map[reflect.Type]ConverterFunc),
-		TimeLayout:         time.RFC3339,
-		MaxSliceCapacity:   1_048_576, // 1M elements
-		AllowPrivateFields: false,
-	}
-}
-
-// clone creates a deep copy of the configuration, including
-// its CustomConverters map (by value, not by reference).
-func (c *Config) clone() *Config {
-	converters := make(map[reflect.Type]ConverterFunc, len(c.CustomConverters))
-	maps.Copy(converters, c.CustomConverters)
-
-	return &Config{
-		MaxDepth:           c.MaxDepth,
-		TagName:            c.TagName,
-		IgnoreUnexported:   c.IgnoreUnexported,
-		DeepCopy:           c.DeepCopy,
-		ZeroFields:         c.ZeroFields,
-		IgnoreNilFields:    c.IgnoreNilFields,
-		CaseSensitive:      c.CaseSensitive,
-		UseJSONTag:         c.UseJSONTag,
-		SkipCircularCheck:  c.SkipCircularCheck,
-		CustomConverters:   converters,
-		FieldNameMapper:    c.FieldNameMapper,
-		ErrorHandler:       c.ErrorHandler,
-		TimeLayout:         c.TimeLayout,
-		MaxSliceCapacity:   c.MaxSliceCapacity,
-		AllowPrivateFields: c.AllowPrivateFields,
-	}
-}
-
-// validate ensures that the configuration values are valid.
-// Returns an error if any field contains an invalid setting.
-func (c *Config) validate() error {
-	if c.MaxDepth < NoDepthLimit {
-		return fmt.Errorf("mapper: invalid MaxDepth %d (must be >= -1)", c.MaxDepth)
-	}
-	if c.MaxSliceCapacity < 0 {
-		return fmt.Errorf("mapper: invalid MaxSliceCapacity %d (must be >= 0)", c.MaxSliceCapacity)
-	}
-	return nil
-}

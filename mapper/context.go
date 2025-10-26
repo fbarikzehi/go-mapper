@@ -35,32 +35,6 @@ type context struct {
 	mu sync.RWMutex
 }
 
-// newContext initializes and returns a new mapping context.
-// The returned context is not shared and should be obtained
-// from a pool or newly allocated per Copy() call.
-func newContext(cfg *Config) *context {
-	return &context{
-		visited: make(map[uintptr]reflect.Value),
-		config:  cfg,
-		errors:  make([]error, 0),
-	}
-}
-
-// reset clears the context to its initial state so it can be safely reused.
-// It preserves allocated memory to minimize GC pressure.
-func (ctx *context) reset(cfg *Config) {
-	ctx.mu.Lock()
-	defer ctx.mu.Unlock()
-
-	for k := range ctx.visited {
-		delete(ctx.visited, k)
-	}
-
-	ctx.errors = ctx.errors[:0]
-	ctx.depth = 0
-	ctx.config = cfg
-}
-
 // checkCircular detects circular references by tracking visited pointers.
 // It returns ErrCircularReference if the given value has been seen before.
 //
@@ -98,35 +72,4 @@ func (ctx *context) addError(err error) {
 	ctx.mu.Lock()
 	ctx.errors = append(ctx.errors, err)
 	ctx.mu.Unlock()
-}
-
-// hasErrors reports whether any errors were recorded in the context.
-func (ctx *context) hasErrors() bool {
-	ctx.mu.RLock()
-	defer ctx.mu.RUnlock()
-	return len(ctx.errors) > 0
-}
-
-// firstError returns the first recorded error, or nil if none exist.
-func (ctx *context) firstError() error {
-	ctx.mu.RLock()
-	defer ctx.mu.RUnlock()
-
-	if len(ctx.errors) == 0 {
-		return nil
-	}
-	return ctx.errors[0]
-}
-
-// allErrors returns a shallow copy of all recorded errors.
-//
-// The returned slice is safe to read and modify, as it is detached
-// from the internal error list.
-func (ctx *context) allErrors() []error {
-	ctx.mu.RLock()
-	defer ctx.mu.RUnlock()
-
-	errors := make([]error, len(ctx.errors))
-	copy(errors, ctx.errors)
-	return errors
 }
