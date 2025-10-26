@@ -7,37 +7,46 @@ on:
 
 permissions:
   contents: write
+  packages: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
-    name: Create Release
+    name: 🚀 GoReleaser Publish
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 🧾 Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # needed for changelog generation
 
-      - name: Setup Go
+      - name: 🔧 Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.25.3"
+          cache: true
 
-      - name: Run tests
-        run: go test -v ./...
+      - name: 🧪 Run tests
+        run: go test -v -race -cover ./...
 
-      - name: Generate changelog
-        id: changelog
-        run: |
-          echo "## What's Changed" > RELEASE_CHANGELOG.md
-          git log --pretty=format:"* %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> RELEASE_CHANGELOG.md
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+      - name: ⚙️ Install GoReleaser
+        uses: goreleaser/goreleaser-action@v6
         with:
-          body_path: RELEASE_CHANGELOG.md
-          draft: false
-          prerelease: false
+          distribution: goreleaser
+          version: latest
+
+      - name: 🚀 Run GoReleaser
+        run: goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/**

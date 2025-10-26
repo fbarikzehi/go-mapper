@@ -1,4 +1,4 @@
-name: CI
+name: Continuous Integration
 
 on:
   push:
@@ -6,84 +6,107 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    name: Test
+    name: Unit & Integration Tests
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        go: ["1.21", "1.22", "1.23", "1.25"]
+        go: ["1.21", "1.22", "1.23", "1.25.3"]
+      fail-fast: false
 
     steps:
-      - name: Checkout code
+      - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go
+      - name: 🔧 Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
           cache: true
 
-      - name: Install dependencies
+      - name: 📦 Download dependencies
         run: go mod download
 
-      - name: Run tests
-        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      - name: 🧪 Run tests with coverage
+        run: |
+          go test -v -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.out ./...
+          go tool cover -func=coverage.out | grep total
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          file: ./coverage.out
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.out
           flags: unittests
-          name: codecov-umbrella
+          name: codecov-${{ matrix.os }}-${{ matrix.go }}
+          fail_ci_if_error: true
 
   lint:
-    name: Lint
+    name: Static Analysis
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go
+      - name: 🔧 Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.25.3"
           cache: true
 
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v4
+      - name: 🧹 Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
         with:
           version: latest
-          args: --timeout=5m
+          args: --timeout=10m --out-format=colored-line-number
 
   security:
     name: Security Scan
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Gosec Security Scanner
+      - name: 🔒 Run gosec
         uses: securego/gosec@master
         with:
           args: ./...
+      - name: 📄 Upload gosec report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gosec-report
+          path: gosec.json
+          if-no-files-found: ignore
 
   benchmark:
-    name: Benchmark
+    name: Benchmarks
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: 🧾 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go
+      - name: 🔧 Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.25.3"
           cache: true
 
-      - name: Run benchmarks
-        run: go test -bench=. -benchmem -run=^$ ./...
+      - name: ⚡ Run benchmarks
+        run: |
+          go test -bench=. -benchmem -run=^$ ./... | tee benchmark.txt
+
+      - name: 📈 Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: benchmark.txt

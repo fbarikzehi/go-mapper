@@ -1,0 +1,55 @@
+version: 2
+project_name: gomap
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: gomap
+    main: ./cmd/gomap
+    binary: gomap
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - "-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}"
+
+archives:
+  - id: gomap-archives
+    builds:
+      - gomap
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: git
+  sort: desc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+
+release:
+  github:
+    owner: "your-github-username"   # replace with your GitHub username/org
+    name: "gomap"                    # replace with your repository name
+  draft: false
+  prerelease: auto

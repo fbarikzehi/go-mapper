@@ -8,7 +8,7 @@ Performance benchmarks and optimization tips for gomap.
 
 goos: linux
 goarch: amd64
-pkg: github.com/fbarikzehi/gomap/test
+pkg: github.com/fbarikzehi/gomap/gomap_test
 cpu: Intel(R) Core(TM) i7-7820HK CPU @ 2.90GHz
 
 ```
