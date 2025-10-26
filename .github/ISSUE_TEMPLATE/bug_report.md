@@ -30,7 +30,7 @@ A clear and concise description of what you expected to happen.
 
 ## Environment
 
-- Go version: [e.g. 1.25.3]
+- Go version: [e.g. 1.24.9]
 - gomap version: [e.g. v1.0.0]
 - OS: [e.g. Ubuntu 22.04]
 

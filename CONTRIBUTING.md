@@ -49,7 +49,7 @@ Feature requests are welcome! Please provide:
 
 ### Prerequisites
 
-- Go 1.25 or later
+- Go 1.24.9 or later
 - Make (optional but recommended)
 
 ### Setup

@@ -7,7 +7,7 @@
 - CPU: Intel i7-10700K @ 3.8GHz
 - RAM: 32GB DDR4
 - OS: Ubuntu 22.04
-- Go: 1.25.3
+- Go: 1.24.9
 
 ### Results Summary
 
