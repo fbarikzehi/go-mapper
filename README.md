@@ -163,7 +163,9 @@ BenchmarkNestedMapping-8       2000000    650 ns/op   192 B/op    6 allocs/op
 BenchmarkSliceMapping-8         500000   3200 ns/op  2048 B/op   52 allocs/op
 ```
 
-See [benchmarks](docs/benchmarks.md) for detailed performance analysis.
+For a more detailed performance analysis, see [benchmarks](docs/benchmarks.md) for detailed performance analysis.
+
+We welcome contributions that add new benchmarks, optimize existing ones, or explore different usage scenarios. Your contributions help improve performance and provide valuable reference points for the community.
 
 ## Contributing
 
