@@ -66,7 +66,7 @@ func timeFormatting() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Response: %+v\n\n", dst)
+	fmt.Printf("Response: %+v\n", dst)
 }
 
 func priceConversion() {
@@ -106,7 +106,7 @@ func priceConversion() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("DTO: %+v\n\n", dst)
+	fmt.Printf("DTO: %+v\n", dst)
 }
 
 func stringTransformations() {
@@ -150,7 +150,7 @@ func stringTransformations() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("DTO (normalized): %+v\n\n", dst)
+	fmt.Printf("DTO (normalized): %+v\n", dst)
 }
 
 func complexTypeConversion() {
@@ -205,5 +205,5 @@ func complexTypeConversion() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("DTO: %+v\n\n", dst)
+	fmt.Printf("DTO: %+v\n", dst)
 }

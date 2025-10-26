@@ -58,7 +58,7 @@ func tagBasedMapping() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Destination: %+v\n\n", dst)
+	fmt.Printf("Destination: %+v\n", dst)
 }
 
 func customConverters() {
@@ -110,7 +110,7 @@ func customConverters() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Destination: %+v\n\n", dst)
+	fmt.Printf("Destination: %+v\n", dst)
 }
 
 func caseInsensitiveMapping() {
@@ -140,7 +140,7 @@ func caseInsensitiveMapping() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Destination: %+v\n\n", dst)
+	fmt.Printf("Destination: %+v\n", dst)
 }
 
 func fieldNameTransformation() {
@@ -177,7 +177,7 @@ func fieldNameTransformation() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Destination: %+v\n\n", dst)
+	fmt.Printf("Destination: %+v\n", dst)
 }
 
 func errorHandling() {

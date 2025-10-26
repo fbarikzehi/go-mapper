@@ -61,7 +61,7 @@ func simpleMapping() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Destination: %+v\n\n", dst)
+	fmt.Printf("Destination: %+v\n", dst)
 }
 
 func nestedMapping() {
@@ -84,7 +84,7 @@ func nestedMapping() {
 	}
 
 	fmt.Printf("Source: %+v\n", src)
-	fmt.Printf("Destination: %+v\n\n", dst)
+	fmt.Printf("Destination: %+v\n", dst)
 }
 
 func sliceMapping() {
@@ -141,5 +141,5 @@ func mapMapping() {
 	}
 
 	fmt.Printf("Source settings: %+v\n", src.Settings)
-	fmt.Printf("Destination settings: %+v\n\n", dst.Settings)
+	fmt.Printf("Destination settings: %+v\n", dst.Settings)
 }
