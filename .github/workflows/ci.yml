@@ -68,6 +68,7 @@ jobs:
         with:
           version: latest
           args: --timeout=10m --out-format=colored-line-number
+          install-mode: source
 
   security:
     name: Security Scan
