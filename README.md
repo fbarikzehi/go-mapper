@@ -1,4 +1,4 @@
-# Struct Mapper Package
+# Struct Mapper
 
 A high-performance, feature-rich Go package for mapping data between structs with deep copy support, customizable field mapping, and comprehensive type handling.
 
@@ -20,7 +20,7 @@ A high-performance, feature-rich Go package for mapping data between structs wit
 ## Installation
 
 ```bash
-go get your-module/mapper
+go get https://github.com/fbarikzehi/go-mapper/mapper
 ```
 
 ## Quick Start
@@ -32,7 +32,7 @@ package main
 
 import (
     "fmt"
-    "your-module/mapper"
+    "https://github.com/fbarikzehi/go-mapper/mapper"
 )
 
 type Source struct {
@@ -49,9 +49,9 @@ type Destination struct {
 
 func main() {
     src := Source{
-        Name:  "John Doe",
+        Name:  "Foo Bar",
         Age:   30,
-        Email: "john@example.com",
+        Email: "foo@example.com",
     }
 
     var dst Destination
