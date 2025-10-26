@@ -49,7 +49,7 @@ changelog:
 
 release:
   github:
-    owner: "your-github-username"   # replace with your GitHub username/org
-    name: "gomap"                    # replace with your repository name
+    owner: "fbarikzehi"
+    name: "gomap"
   draft: false
   prerelease: auto

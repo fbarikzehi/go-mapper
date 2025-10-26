@@ -56,7 +56,7 @@ Feature requests are welcome! Please provide:
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/gomap.git
+git clone https://github.com/fbarikzehi/gomap.git
 cd gomap
 
 # Install development tools
