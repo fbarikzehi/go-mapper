@@ -37,6 +37,7 @@ jobs:
         run: go mod download
 
       - name: 🧪 Run tests with coverage
+        shell: bash
         run: |
           set -euo pipefail
 
